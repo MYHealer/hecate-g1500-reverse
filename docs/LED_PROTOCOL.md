@@ -28,8 +28,8 @@ hid_send_feature_report: [ED] [06] [10] [mode] [00] [R] [G] [B] [00]x8  (16 byte
 | 0 | 0xED | Report ID |
 | 1 | 0x06 | Command type |
 | 2 | 0x10 | Sub-command (color set) |
-| 3 | mode | LED mode (see below) |
-| 4 | 0x00 | Reserved (always 0) |
+| 3 | 0x01 | Fixed (always 0x01) |
+| 4 | mode | **LED mode (0x00-0x04)** |
 | 5 | R | **Red channel (0x00-0xFF)** |
 | 6 | G | **Green channel (0x00-0xFF)** |
 | 7 | B | **Blue channel (0x00-0xFF)** |
@@ -38,12 +38,11 @@ hid_send_feature_report: [ED] [06] [10] [mode] [00] [R] [G] [B] [00]x8  (16 byte
 ### LED Modes
 | Mode | Value | Description |
 |------|-------|-------------|
-| Off | 0x00 | LED off |
-| Constant | 0x01 | Static color |
-| Breathe | 0x02 | Breathing effect |
-| Blink Slow | 0x03 | Slow blinking |
-| Blink Fast | 0x04 | Fast blinking |
-| Heartbeat | 0x05 | Heartbeat effect |
+| Constant | 0x00 | Static color |
+| Breathe | 0x01 | Breathing effect |
+| Blink Slow | 0x02 | Slow blinking |
+| Blink Fast | 0x03 | Fast blinking |
+| Heartbeat | 0x04 | Heartbeat effect |
 
 ### Color Encoding
 **Standard RGB** in bytes 5, 6, 7 (R, G, B). Byte 4 is always 0x00.

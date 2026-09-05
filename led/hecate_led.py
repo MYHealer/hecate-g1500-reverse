@@ -53,12 +53,11 @@ def find_col02():
 
 
 # LED Modes
-MODE_OFF = 0
-MODE_CONSTANT = 1
-MODE_BREATHE = 2
-MODE_BLINK_SLOW = 3
-MODE_BLINK_FAST = 4
-MODE_HEARTBEAT = 5
+MODE_CONSTANT = 0
+MODE_BREATHE = 1
+MODE_BLINK_SLOW = 2
+MODE_BLINK_FAST = 3
+MODE_HEARTBEAT = 4
 
 # Preset colors: (R, G, B)
 COLORS = {
@@ -67,11 +66,6 @@ COLORS = {
     'green':     (0x00, 0xFF, 0x00),
     'blue':      (0x00, 0x50, 0xFF),
     'pink':      (0xFF, 0x00, 0xFF),
-    'cyan':      (0x00, 0xFF, 0xFF),
-    'yellow':    (0xFF, 0xFF, 0x00),
-    'white':     (0xFF, 0xFF, 0xFF),
-    'orange':    (0xFF, 0x80, 0x00),
-    'purple':    (0xFF, 0x00, 0xFF),
     'off':       (0x00, 0x00, 0x00),
 }
 
@@ -106,9 +100,10 @@ class HecateLED:
     def set_led(self, mode=MODE_CONSTANT, r=0, g=0, b=0):
         """
         Set LED color and mode.
-        Correct protocol: init FIRST, then SetFeature.
+        Protocol: init → SetFeature
+        Format: [ED][06][10][01][mode][R][G][B] + padding
 
-        mode: 0=Off, 1=Constant, 2=Breathe, 3=BlinkSlow, 4=BlinkFast, 5=Heartbeat
+        mode: 0=Constant, 1=Breathe, 2=BlinkSlow, 3=BlinkFast, 4=Heartbeat
         r, g, b: 0-255 each
         """
         # Step 1: Init
@@ -116,8 +111,7 @@ class HecateLED:
         time.sleep(0.05)
         # Step 2: SetFeature (set color)
         report = (ctypes.c_ubyte * 16)(
-            0xED, 0x06, 0x10, mode,
-            0x00, r, g, b,
+            0xED, 0x06, 0x10, 0x01, mode, r, g, b,
             *([0]*8)
         )
         ret = hidapi.hid_send_feature_report(self.handle, report, 16)
@@ -133,7 +127,7 @@ class HecateLED:
 
     def off(self):
         """Turn LED off"""
-        self.set_led(MODE_OFF, 0, 0, 0)
+        self.set_led(MODE_CONSTANT, 0, 0, 0)
 
     def close(self):
         if self.handle:
