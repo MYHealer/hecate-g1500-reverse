@@ -31,7 +31,7 @@ pip install frida
 ### 控制 LED
 
 ```bash
-# 关闭 HECATE.exe 后使用
+# 直接使用，不需要关闭 HECATE.exe
 python led/hecate_led.py red          # 红色常亮
 python led/hecate_led.py green        # 绿色
 python led/hecate_led.py blue         # 蓝色

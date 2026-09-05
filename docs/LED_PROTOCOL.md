@@ -3,8 +3,8 @@
 ## Protocol: Two-Step (init → SetFeature)
 
 ### Critical Notes
-1. **HECATE.exe must be killed** before controlling LED
-2. **Order: init FIRST, then SetFeature** (confirmed by Frida hook of HECATE.exe)
+1. **Order: init FIRST, then SetFeature** (confirmed by Frida hook of HECATE.exe)
+2. HECATE.exe 不需要关闭（不影响控制）
 
 ### API
 - **Library**: hidapi.dll (from `C:\Program Files\HECATE\`)
