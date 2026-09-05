@@ -45,6 +45,15 @@ python led/hecate_led.py off             # 关灯
 python led/hecate_led.py test            # 测试所有颜色
 ```
 
+### 声光律动
+
+```bash
+pip install pyaudiowpatch numpy
+python led/music_reactive.py             # 启动声光律动
+# 播放音乐，LED 自动跟随节奏变化
+# Ctrl+C 退出
+```
+
 ### 音频解锁
 
 ```bash
@@ -173,6 +182,7 @@ Hook 了以下函数：
 | 文件 | 说明 |
 |------|------|
 | `hecate_led.py` | 最终 LED 控制器，支持所有颜色和灯效 |
+| `music_reactive.py` | 声光律动：实时音频分析 → LED 颜色/灯效同步 |
 | `hook_frida.py` | Frida hook 脚本，捕获 HECATE HID 流量（17.x 兼容）|
 | `color_test.py` | 颜色编码自动测试工具 |
 
@@ -201,7 +211,6 @@ Hook 了以下函数：
 
 ## 已知限制
 
-- **音乐律动模式** — 需要 WASAPI loopback + beat detection，尚未实现
 - **需要关闭 HECATE.exe** — 不能同时使用官方 app 和自定义控制
 - **hidapi.dll 依赖** — 需要安装 HECATE 驱动
 
