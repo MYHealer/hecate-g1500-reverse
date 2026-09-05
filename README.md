@@ -156,6 +156,8 @@ Hook 了以下函数：
 
 标准 RGB，三个独立通道。
 
+**限制**: 固件配置 `"any_color": false`，只支持5个预设颜色（ice_blue/red/green/blue/pink）。发送其他 RGB 值会被固件忽略。这是硬件限制，非协议问题。
+
 ### 踩坑记录
 
 1. **HECATE.exe 抢占设备** — 运行时它持有 HID handle，我们的命令会被覆盖。必须先关闭。
