@@ -101,9 +101,10 @@ CHUNK = 1024          # 每帧采样数
 RATE = 48000          # 采样率
 BASS_MAX = 250        # bass 上限 Hz
 MID_MAX = 2000        # mid 上限 Hz
-BEAT_THRESHOLD = 1.5  # 节拍检测: 能量突变倍数
-BEAT_COOLDOWN = 0.3   # 节拍冷却时间 (秒)
-LED_INTERVAL = 0.1    # LED 更新间隔 (秒)
+BEAT_THRESHOLD = 2.0  # 节拍检测: 能量突变倍数 (更高=更不敏感)
+BEAT_COOLDOWN = 0.5   # 节拍冷却时间 (秒)
+LED_INTERVAL = 0.2    # LED 更新间隔 (秒) (更慢=更柔和)
+SMOOTH_FACTOR = 0.3   # 能量平滑系数 (0-1, 越小越平滑)
 
 
 class AudioAnalyzer:
@@ -113,6 +114,10 @@ class AudioAnalyzer:
         self.last_beat_time = 0
         self.current_mode = MODE_CONSTANT
         self.mode_until = 0
+        # 平滑后的能量值
+        self.smooth_bass = 0
+        self.smooth_mid = 0
+        self.smooth_treble = 0
 
     def analyze(self, audio_data, channels):
         """分析一帧音频，返回 (bass, mid, treble) 能量 (0-1)"""
@@ -138,7 +143,12 @@ class AudioAnalyzer:
         mid = np.max(magnitude[mid_mask]) if np.any(mid_mask) else 0
         treble = np.max(magnitude[treble_mask]) if np.any(treble_mask) else 0
 
-        return bass, mid, treble
+        # 指数平滑，减少跳变
+        self.smooth_bass = self.smooth_bass * (1 - SMOOTH_FACTOR) + bass * SMOOTH_FACTOR
+        self.smooth_mid = self.smooth_mid * (1 - SMOOTH_FACTOR) + mid * SMOOTH_FACTOR
+        self.smooth_treble = self.smooth_treble * (1 - SMOOTH_FACTOR) + treble * SMOOTH_FACTOR
+
+        return self.smooth_bass, self.smooth_mid, self.smooth_treble
 
     def detect_beat(self, bass):
         """基于 bass 能量检测节拍"""
